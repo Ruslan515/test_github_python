@@ -1,0 +1,71 @@
+beginner.how_many_items_in_hdfs:
+    stdin: 9
+intermediate.hdfs_list_recursively:
+    stdin: "hdfs dfs -ls -R /data/wiki"
+intermediate.hdfs_list_recursively_human_readable:
+    stdin: "hdfs dfs -ls -h -R /data/wiki"
+intermediate.hdfs_file_replication_factor:
+    stdin: 3
+intermediate.hdfs_folder_replication_factor:
+    stdin: 0
+intermediate.hdfs_describe_size:
+    stdin: "actual"
+intermediate.hdfs_cumulative_size:
+    stdin:  "hdfs dfs -du -s -h /data/wiki"
+intermediate.hdfs_create_folder:
+    stdin: "hdfs dfs -mkdir rusel515/test_dir"
+intermediate.hdfs_create_nested_folder:
+    stdin: "hdfs dfs -mkdir -p rusel515/dir1/dir2/dir3"
+intermediate.hdfs_remove_nested_folders:
+    stdin: "hdfs dfs -rm -r rusel515/dir1"
+intermediate.hdfs_trash_behavior:
+    stdin: "hdfs dfs -rm -skipTrash"
+intermediate.hdfs_create_empty_file:
+    stdin: "hdfs dfs -touchz rusel515/empty.txt"
+intermediate.hdfs_create_small_file:
+    stdin: |-
+        vim to_put.txt
+        hdfs dfs -put to_put.txt rusel515
+intermediate.hdfs_output_file:
+    stdin: "hdfs dfs -cat rusel515/to_put.txt"
+intermediate.hdfs_output_file_end:
+    stdin: "hdfs dfs -tail rusel515/to_put.txt"
+intermediate.hdfs_output_file_start:
+    stdin: "hdfs dfs -cat rusel515/to_put.txt | head -n 2"
+intermediate.hdfs_tail_vs_unix_tail:
+    stdin: "tail -ck to_put.txt"
+intermediate.hdfs_copy_file:
+    stdin: "hdfs dfs -cp rusel515/to_put.txt rusel515/to_put_2.txt"
+intermediate.hdfs_move_file:
+    stdin: "hdfs dfs -mv rusel515/to_put_2.txt rusel515/dir1/dir2"
+intermediate.hdfs_download_and_concatenate:
+    stdin: "hdfs dfs -getmerge rusel515/* from_getmerge.txt"
+advanced.hdfs_set_file_replication:
+    stdin: "hdfs dfs -setrep -w 2 rusel515/to_put.txt"
+advanced.hdfs_get_files_and_block:
+    stdin: "hdfs fsck rusel515 -files -blocks -locations"
+advanced.hdfs_get_block_information:
+    stdin: "hdfs fsck -blockId blk_1106587808"
+advanced.hdfs_dfs_architecture:
+    stdin: |-
+        hdfs fsck rusel515/dir1/to_put.txt -files -blocks -locations
+        sudo -i -u hdfsuser
+        ssh brain-node1.bigdatateam.org
+        hdfs getconf -confKey dfs.datanode.data.dir
+        find /srv/disk1/hadoop/datanode -name 'blk_1106587809'
+        cat /srv/disk1/hadoop/datanode/current/BP-981064612-78.46.171.101-1581506447497/current/finalized/subdir21/subdir16/blk_1106587809
+        exit
+        exit
+        hdfs dfs -ls -R /data/namenode_example
+        hdfs dfs -find /data/namenode_example/current -name 'fsimage*'
+        hdfs dfs -cat /data/namenode_example/current/fsimage_0000000000030725661 | head        
+advanced.webhdfs_read_100B:
+    stdin: "curl -i -L 'http://brain-master:50070/webhdfs/v1/user/bd_made2022q2/rusel515/to_put.txt?op=OPEN&user.name=bd_made2022q2&lenght=100'"
+advanced.webhdfs_curl_follow_redirects:
+    stdin: "curl -i -L 'http://brain-master:50070/webhdfs/v1/user/bd_made2022q2/rusel515/to_put.txt?op=OPEN&user.name=bd_made2022q2'"
+advanced.webhdfs_get_file_detailed_information:
+    stdin: "curl -i 'http://brain-master:50070/webhdfs/v1/user/bd_made2022q2/rusel515/to_put.txt?op=GETFILESTATUS'"
+advanced.webhdfs_change_file_replication:
+    stdin: "curl -i -X PUT 'http://brain-master:50070/webhdfs/v1/user/bd_made2022q2/rusel515/to_put.txt?op=SETREPLICATION&user.name=bd_made2022q2&replication=3'"
+advanced.webhdfs_append_to_file:
+    stdin: "curl -i -L -X POST -T test.txt 'http://brain-master:50070/webhdfs/v1/user/bd_made2022q2/rusel515/to_put.txt?user.name=bd_made2022q2&op=APPEND'"
